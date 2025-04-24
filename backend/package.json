@@ -2,20 +2,23 @@
   "name": "compcare-backend",
   "version": "1.0.0",
   "description": "",
- "main": "src/loader.js",
-"scripts": {
-  "start": "node src/config/server.js",
-  "dev": "nodemon src/config/server.js",
-  "production": "pm2 start src/config/loader.js --name compcare-backend"
-},
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/config/server.js",
+    "dev": "nodemon src/config/server.js",
+    "production": "pm2 start src/config/server.js --name compcare-backend"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-query-int": "^3.0.0",
+    "firebase": "^11.6.1",
+    "firebase-admin": "^13.3.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^4.13.21",

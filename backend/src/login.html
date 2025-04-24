@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+  </head>
+  <body>
+    <h2>Login com Google (Teste)</h2>
+    <button onclick="login()">Login com Google</button>
+    <pre id="tokenOutput"></pre>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCSKbDAhyDBoEDwK6Q1RTrRrR65ORfJSnw",
+        authDomain: "compcare-a46da.firebaseapp.com",
+        databaseURL: "https://compcare-a46da-default-rtdb.firebaseio.com",
+        projectId: "compcare-a46da",
+        storageBucket: "compcare-a46da.firebasestorage.app",
+        messagingSenderId: "265610399335",
+        appId: "1:265610399335:web:4e0679308af60c731d0ec2",
+        measurementId: "G-PP6QFTNWCJ",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      function login() {
+        auth
+          .signInWithPopup(provider)
+          .then(async (result) => {
+            const token = await result.user.getIdToken();
+            document.getElementById("tokenOutput").textContent = token;
+            console.log("TOKEN:", token);
+          })
+          .catch(console.error);
+      }
+    </script>
+  </body>
+</html>
