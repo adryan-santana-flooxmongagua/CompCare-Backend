@@ -1,32 +1,20 @@
 {
-  "name": "compcare-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend da plataforma CompCare",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/config/server.js",
-    "dev": "nodemon src/config/server.js",
-    "production": "pm2 start src/config/server.js --name compcare-backend"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "express-query-int": "^3.0.0",
-    "firebase": "^11.6.1",
-    "firebase-admin": "^13.3.0",
-    "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21",
-    "mongoose": "^4.13.21",
-    "mongoose-paginate": "^5.0.3",
-    "node-restful": "^0.2.6",
-    "pm2": "^6.0.5"
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.0.2"
   }
 }
