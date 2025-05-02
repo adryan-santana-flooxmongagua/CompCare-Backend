@@ -1,9 +1,14 @@
-const express = require("express")
-const router = express()
+const express = require("express");
+const router = express.Router(); 
 
-// test route 
+const vagaRoutes = require("./vagaRoutes");
+
+// test route
 router.get("/", (req, res) => {
-    res.send("API Working!");
+  res.send("API Working!");
 });
 
-module.exports = router
+// usar as rotas de vagas
+router.use("/", vagaRoutes);
+
+module.exports = router;

@@ -4,27 +4,28 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
-const app = express()
+const app = express();
 
-// config JSON and form data response
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+// Configurar JSON e formulário
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// cORS
+// CORS
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
-// Uploads directory
+// Servir arquivos estáticos da pasta uploads
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-// DB connection
-require("./src/config/db.js")
+// Conexão com o banco
+require("./src/config/db.js");
 
-// routes
+// Rotas
 const router = require("./src/routes/Router.js");
-app.use(router);
+app.use("/api", router);
 
+// Iniciar servidor
 app.listen(port, () => {
-    console.log(`App rodando na porta ${port}`)
-})
+    console.log(`App rodando na porta ${port}`);
+});
