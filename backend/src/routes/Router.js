@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 // Outras rotas
-router.use('/vaga', vagaRoutes);
+router.use('/vagas', vagaRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes); 
 

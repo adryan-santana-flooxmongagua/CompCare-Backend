@@ -1,3 +1,4 @@
+require('dotenv').config(); // Garante que as variáveis do .env sejam carregadas
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -12,16 +13,20 @@ const autenticarUsuario = async (req, res, next) => {
   }
 
   try {
+    // Verifica se o token é válido
     const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Busca o usuário com base no ID presente no token
     const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado.' });
     }
 
-    req.user = user;
+    req.user = user; // Adiciona o usuário à requisição para uso posterior
     next();
   } catch (error) {
+    console.error('Erro ao verificar token:', error.message);
     return res.status(401).json({ message: 'Token inválido. Acesso negado.' });
   }
 };
