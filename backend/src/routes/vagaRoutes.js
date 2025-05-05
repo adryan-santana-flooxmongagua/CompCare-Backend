@@ -11,7 +11,7 @@ const {
 } = require("../controllers/vagaController");
 
 // Cria a pasta uploads se não existir
-const uploadDir = path.join(__dirname, "../../uploads");
+const uploadDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }

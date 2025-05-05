@@ -1,14 +1,18 @@
-const express = require("express");
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 
-const vagaRoutes = require("./vagaRoutes");
+const vagaRoutes = require('./vagaRoutes');
+const authRoutes = require('./authRoutes');
+const userRoutes = require('./userRoutes');
 
-// test route
-router.get("/", (req, res) => {
-  res.send("API Working!");
+// Rota de teste
+router.get('/', (req, res) => {
+  res.send('API Working!');
 });
 
-// usar as rotas de vagas
-router.use("/", vagaRoutes);
+// Outras rotas
+router.use('/vaga', vagaRoutes);
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes); 
 
 module.exports = router;
