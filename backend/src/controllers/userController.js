@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 // Listar usuários (sem retornar a senha)
 exports.listarUsuarios = async (req, res) => {
