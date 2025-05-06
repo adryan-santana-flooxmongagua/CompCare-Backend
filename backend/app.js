@@ -4,15 +4,15 @@ const path = require('path');
 const cors = require('cors');
 
 const port = process.env.PORT || 5000;
-
 const app = express();
 
 // Configurar JSON e formulário
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// CORS
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+// CORS com variável de ambiente
+const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:3000';
+app.use(cors({ credentials: true, origin: allowedOrigin }));
 
 // Servir arquivos estáticos da pasta uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
