@@ -8,6 +8,7 @@ const {
   createVaga,
   listarVagas,
   editarVaga,
+  deletarVaga,
 } = require("../controllers/vagaController");
 
 // Cria a pasta uploads se não existir
@@ -22,7 +23,22 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
+    const timestamp = Date.now();
+
+    // Nome original do arquivo sem extensão
+    const nameWithoutExt = path.parse(file.originalname).name;
+
+    // Extensão original (ex: .jpg, .png)
+    const ext = path.extname(file.originalname);
+
+    // Sanitiza o nome removendo acentos e caracteres especiais
+    const sanitized = nameWithoutExt
+      .normalize("NFD")                     // separa letras de acentos
+      .replace(/[\u0300-\u036f]/g, "")     // remove acentos
+      .replace(/[^a-zA-Z0-9_-]/g, "")      // remove caracteres especiais
+      .toLowerCase();                      // tudo minúsculo (opcional)
+
+    cb(null, `${timestamp}_${sanitized}${ext}`);
   },
 });
 
@@ -35,12 +51,14 @@ const upload = multer({
     } else {
       cb(new Error('Tipo de arquivo inválido.'));
     }
-  },
+  }
 });
+
 
 // Rotas
 router.post("/vagas", upload.single("image"), createVaga);
 router.get("/vagas", listarVagas);
 router.put("/vagas/:id", upload.single("image"), editarVaga);
+router.delete("/vagas/:id", deletarVaga);
 
 module.exports = router;
