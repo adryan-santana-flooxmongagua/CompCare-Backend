@@ -4,7 +4,8 @@ const {
   criarCandidatura,
   listarMinhasCandidaturas,
   aprovarCandidatura,
-  listarPendentes
+  listarPendentes,
+  recusarCandidatura
 } = require('../controllers/candidaturaController');
 const { autenticarUsuario, verificarAdmin } = require('../middleware/authMiddleware');
 
@@ -18,5 +19,8 @@ router.get('/pendentes', autenticarUsuario, verificarAdmin, listarPendentes);
 
 // Aprovar uma candidatura (apenas admins)
 router.patch('/aprovar/:id', autenticarUsuario, verificarAdmin, aprovarCandidatura);
+
+// Recusar uma candidatura (apenas admins)
+router.patch('/recusar/:id', autenticarUsuario, verificarAdmin, recusarCandidatura);
 
 module.exports = router;

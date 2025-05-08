@@ -68,6 +68,33 @@ exports.aprovarCandidatura = async (req, res) => {
   }
 };
 
+// Recusar uma candidatura
+exports.recusarCandidatura = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'ID inválido.' });
+  }
+
+  try {
+    const candidatura = await Candidatura.findByIdAndUpdate(
+      id,
+      { status: 'recusada', updatedAt: new Date() },
+      { new: true }
+    );
+
+    if (!candidatura) {
+      return res.status(404).json({ message: 'Candidatura não encontrada.' });
+    }
+
+    res.json({ message: 'Candidatura recusada com sucesso.', candidatura });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao recusar candidatura.' });
+  }
+};
+
+
 // Listar todas as candidaturas pendentes
 exports.listarPendentes = async (req, res) => {
   try {
