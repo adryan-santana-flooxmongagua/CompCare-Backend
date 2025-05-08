@@ -13,9 +13,14 @@ const CandidaturaSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pendente', 'aceita', 'recusada'],
+    enum: ['pendente', 'aprovado', 'recusada', 'confirmado'],
     default: 'pendente',
   },
+  erros: {
+    type: Number,
+    default: 0,
+  },
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model('Candidatura', CandidaturaSchema);
