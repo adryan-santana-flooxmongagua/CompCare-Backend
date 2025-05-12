@@ -5,6 +5,7 @@ const vagaRoutes = require('./vagaRoutes');
 const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const candidaturaRoutes = require('./candidaturaRoutes');
+const taskRoutes = require('./taskRoutes');
 
 // Rota de teste
 router.get('/', (req, res) => {
@@ -16,5 +17,7 @@ router.use('/vagas', vagaRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/candidaturas', candidaturaRoutes);
+router.use('/tasks', taskRoutes);
+
 
 module.exports = router;
