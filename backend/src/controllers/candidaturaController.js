@@ -170,14 +170,17 @@ exports.listarConfirmados = async (req, res) => {
   try {
     const confirmados = await Candidatura.find({ status: "confirmado" })
       .populate("userId", "name email") // pega nome e email do voluntário
-      .populate("vagaId", "titulodavaga") // opcional: pega título da vaga
+      .populate("vagaId", "titulodavaga")
       .sort({ updatedAt: -1 });
 
-    const resultado = confirmados.map((c) => ({
+    // Remove candidaturas com userId nulo
+    const confirmadosValidos = confirmados.filter(c => c.userId);
+
+    const resultado = confirmadosValidos.map((c) => ({
       nome: c.userId.name,
       email: c.userId.email,
       vaga: c.vagaId?.titulodavaga || "Não informado",
-      fonte: "Dispatch", // pode ser ajustado conforme a origem
+      fonte: "Dispatch",
       timestamp: c.updatedAt,
       erros: c.erros || 0,
     }));
