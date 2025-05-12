@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const vagaRoutes = require('./vagaRoutes');
-const authRoutes = require('./authRoutes');
-const userRoutes = require('./userRoutes');
-const candidaturaRoutes = require('./candidaturaRoutes');
-const taskRoutes = require('./taskRoutes');
+const vagaRoutes = require('./vaga.Routes');
+const authRoutes = require('./auth.Routes');
+const userRoutes = require('./user.Routes');
+const candidaturaRoutes = require('./candidatura.Routes');
+const taskRoutes = require('./task.Routes');
 
 // Rota de teste
 router.get('/', (req, res) => {
