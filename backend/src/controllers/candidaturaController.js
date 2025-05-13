@@ -23,24 +23,26 @@ exports.criarCandidatura = async (req, res) => {
 };
 
 exports.listarMinhasCandidaturas = async (req, res) => {
-    try {
-      const candidaturas = await Candidatura.find({ userId: req.user._id }).populate('vagaId');
-  
-      const resultado = candidaturas.map(c => ({
-        _id: c._id,
-        status: c.status,
-        vaga: {
-          titulodavaga: c.vagaId?.titulodavaga,
-          descricao: c.vagaId?.descricao,
-        },
-      }));
-  
-      res.json(resultado);
-    } catch (error) {
-      console.error('Erro ao buscar candidaturas do usuário:', error);
-      res.status(500).json({ message: 'Erro ao buscar candidaturas.' });
-    }
-  };
+  try {
+    const candidaturas = await Candidatura.find({ userId: req.user._id }).populate('vagaId');
+
+    const resultado = candidaturas.map(c => ({
+      _id: c._id,
+      status: c.status,
+      vagaId: c.vagaId?._id,
+      vaga: {
+        titulodavaga: c.vagaId?.titulodavaga,
+        descricao: c.vagaId?.descricao,
+      },
+    }));
+
+    res.json(resultado);
+  } catch (error) {
+    console.error('Erro ao buscar candidaturas do usuário:', error);
+    res.status(500).json({ message: 'Erro ao buscar candidaturas.' });
+  }
+};
+
 
  // Aprovar uma candidatura
 exports.aprovarCandidatura = async (req, res) => {
