@@ -1,3 +1,5 @@
+const Candidatura = require("../models/Candidatura");
+const Task = require("../models/task");
 const Vaga = require("../models/Vaga");
 const crypto = require("crypto");
 const fs = require("fs");
@@ -77,7 +79,7 @@ const deletarVaga = async (req, res) => {
       return res.status(404).json({ message: "Vaga não encontrada." });
     }
 
-    // Tenta excluir a imagem, se existir
+    // Excluir imagem se existir
     if (vaga.imageUrl) {
       const imagePath = path.join(__dirname, "../../", vaga.imageUrl);
       fs.access(imagePath, fs.constants.F_OK, (err) => {
@@ -85,13 +87,19 @@ const deletarVaga = async (req, res) => {
           fs.unlink(imagePath, (err) => {
             if (err) console.warn("Erro ao excluir imagem:", err.message);
           });
-        } else {
-          console.warn("Imagem não encontrada para exclusão:", imagePath);
         }
       });
     }
 
+    // EXCLUIR candidaturas relacionadas
+    await Candidatura.deleteMany({ vagaId: vaga._id });
+
+    // EXCLUIR tasks relacionadas
+    await Task.deleteMany({ vagaId: vaga._id });
+
+    // Excluir a vaga
     await Vaga.findByIdAndDelete(vagaId);
+
     res.status(200).json({ message: "Vaga excluída com sucesso!" });
   } catch (error) {
     console.error("Erro ao excluir vaga:", error);
@@ -99,10 +107,10 @@ const deletarVaga = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createVaga,
   listarVagas,
   editarVaga,
   deletarVaga
 };
+

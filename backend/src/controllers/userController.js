@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Candidatura = require("../models/Candidatura");
 const mongoose = require('mongoose');
 
 // Listar usuários (sem retornar a senha)
@@ -16,13 +17,11 @@ exports.listarUsuarios = async (req, res) => {
 exports.deletarUsuario = async (req, res) => {
   const { id } = req.params;
 
-  // Checar se o ID é válido
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'ID inválido' });
   }
 
   try {
-    // Verificar se o usuário está tentando excluir a si mesmo
     if (req.user._id.toString() === id) {
       return res.status(403).json({ error: 'Você não pode excluir seu próprio usuário.' });
     }
@@ -32,6 +31,9 @@ exports.deletarUsuario = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
+
+    // 🧹 Excluir candidaturas do usuário
+    await Candidatura.deleteMany({ userId: id });
 
     res.json({ message: 'Usuário deletado com sucesso!' });
   } catch (error) {
