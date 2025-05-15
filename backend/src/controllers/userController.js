@@ -2,16 +2,17 @@ const User = require('../models/User');
 const Candidatura = require("../models/Candidatura");
 const mongoose = require('mongoose');
 
-// Listar usuários (sem retornar a senha)
+// Listar todos os usuários (sem retornar a senha)
 exports.listarUsuarios = async (req, res) => {
   try {
-    const usuarios = await User.find({ role: 'volunteer' }, '-password');
+    const usuarios = await User.find({}, '-password'); // Removido filtro por role
     res.json(usuarios);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao buscar usuários' });
   }
 };
+
 
 // Deletar usuário por ID
 exports.deletarUsuario = async (req, res) => {

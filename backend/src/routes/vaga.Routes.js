@@ -54,7 +54,6 @@ const upload = multer({
   }
 });
 
-
 // Rotas
 router.post("/vagas", upload.single("image"), createVaga);
 router.get("/vagas", listarVagas);
