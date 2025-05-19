@@ -5,8 +5,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-
-// POST - Criar nova vaga
+// POST - Cria uma nova vaga
 const createVaga = async (req, res) => {
   try {
     const {
@@ -36,7 +35,7 @@ const createVaga = async (req, res) => {
   }
 };
 
-// GET - Listar todas as vagas
+// GET - Lista todas as vagas
 const listarVagas = async (req, res) => {
   try {
     const vagas = await Vaga.find().sort({ createdAt: -1 });
@@ -47,7 +46,7 @@ const listarVagas = async (req, res) => {
   }
 };
 
-// PUT - Editar vaga por ID
+// PUT - Edita uma vaga pelo ID
 const editarVaga = async (req, res) => {
   try {
     const vagaId = req.params.id;
@@ -70,6 +69,7 @@ const editarVaga = async (req, res) => {
   }
 };
 
+// DELETE - Remove uma vaga e seus dados relacionados
 const deletarVaga = async (req, res) => {
   try {
     const vagaId = req.params.id;
@@ -79,7 +79,7 @@ const deletarVaga = async (req, res) => {
       return res.status(404).json({ message: "Vaga não encontrada." });
     }
 
-    // Excluir imagem se existir
+    // Remove imagem associada (se existir)
     if (vaga.imageUrl) {
       const imagePath = path.join(__dirname, "../../", vaga.imageUrl);
       fs.access(imagePath, fs.constants.F_OK, (err) => {
@@ -91,13 +91,11 @@ const deletarVaga = async (req, res) => {
       });
     }
 
-    // EXCLUIR candidaturas relacionadas
+    // Remove candidaturas e tarefas vinculadas
     await Candidatura.deleteMany({ vagaId: vaga._id });
-
-    // EXCLUIR tasks relacionadas
     await Task.deleteMany({ vagaId: vaga._id });
 
-    // Excluir a vaga
+    // Remove a vaga
     await Vaga.findByIdAndDelete(vagaId);
 
     res.status(200).json({ message: "Vaga excluída com sucesso!" });
@@ -111,6 +109,5 @@ module.exports = {
   createVaga,
   listarVagas,
   editarVaga,
-  deletarVaga
+  deletarVaga,
 };
-
