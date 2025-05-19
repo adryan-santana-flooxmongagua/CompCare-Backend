@@ -1,10 +1,10 @@
-require('dotenv').config(); // Garante que as variáveis do .env sejam carregadas
+require('dotenv').config(); // Carrega variáveis de ambiente do .env
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'seuSegredoAqui';
 
-// Middleware para verificar se o usuário está autenticado (qualquer tipo)
+// Middleware - Verifica se o usuário está autenticado (qualquer tipo)
 const autenticarUsuario = async (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -13,17 +13,18 @@ const autenticarUsuario = async (req, res, next) => {
   }
 
   try {
-    // Verifica se o token é válido
+    // Decodifica o token e valida com a chave secreta
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Busca o usuário com base no ID presente no token
+    // Busca o usuário no banco de dados
     const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado.' });
     }
 
-    req.user = user; // Adiciona o usuário à requisição para uso posterior
+    // Anexa o usuário à requisição
+    req.user = user;
     next();
   } catch (error) {
     console.error('Erro ao verificar token:', error.message);
@@ -31,7 +32,7 @@ const autenticarUsuario = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar se o usuário é admin
+// Middleware - Verifica se o usuário autenticado é um administrador
 const verificarAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Acesso negado. Apenas administradores.' });
