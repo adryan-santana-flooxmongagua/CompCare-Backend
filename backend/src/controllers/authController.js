@@ -2,26 +2,28 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'admin';
 
+// Registro de usuário
 exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
   try {
-    // Verificar se o e-mail já existe
+    // Verifica se o email já existe
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ error: 'Email já está em uso' });
 
-    // Criptografar a senha
+    // Criptografa a senha
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Criar o usuário
+    // Cria o usuário
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: role || 'volunteer', // Default é 'volunteer' se não for especificado
+      role: role || 'volunteer',
     });
 
     res.status(201).json({ message: 'Usuário registrado com sucesso!' });
@@ -30,21 +32,22 @@ exports.register = async (req, res) => {
   }
 };
 
+// Login de usuário
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Verificar se o usuário existe
+    // Busca o usuário
     const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({ error: 'Credenciais inválidas' });
 
-    // Comparar senha fornecida com a senha criptografada
+    // Compara a senha
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ error: 'Credenciais inválidas' });
 
-    // Gerar um token JWT
+    // Gera o token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       JWT_SECRET,
