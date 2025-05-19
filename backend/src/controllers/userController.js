@@ -2,10 +2,10 @@ const User = require('../models/User');
 const Candidatura = require("../models/Candidatura");
 const mongoose = require('mongoose');
 
-// Listar todos os usuários (sem retornar a senha)
+// Lista todos os usuários (sem senha)
 exports.listarUsuarios = async (req, res) => {
   try {
-    const usuarios = await User.find({}, '-password'); // Removido filtro por role
+    const usuarios = await User.find({}, '-password');
     res.json(usuarios);
   } catch (error) {
     console.error(error);
@@ -13,8 +13,7 @@ exports.listarUsuarios = async (req, res) => {
   }
 };
 
-
-// Deletar usuário por ID
+// Deleta um usuário por ID
 exports.deletarUsuario = async (req, res) => {
   const { id } = req.params;
 
@@ -23,6 +22,7 @@ exports.deletarUsuario = async (req, res) => {
   }
 
   try {
+    // Impede autoexclusão
     if (req.user._id.toString() === id) {
       return res.status(403).json({ error: 'Você não pode excluir seu próprio usuário.' });
     }
@@ -33,7 +33,7 @@ exports.deletarUsuario = async (req, res) => {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    // 🧹 Excluir candidaturas do usuário
+    // Remove candidaturas vinculadas
     await Candidatura.deleteMany({ userId: id });
 
     res.json({ message: 'Usuário deletado com sucesso!' });
