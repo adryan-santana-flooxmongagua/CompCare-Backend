@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const Candidatura = require('../models/Candidatura');
 
+// Criar uma candidatura
 exports.criarCandidatura = async (req, res) => {
   const { vagaId } = req.body;
-  const userId = req.user.id; // extraído do token JWT
+  const userId = req.user.id; // do token JWT
 
   try {
-    // Verifica duplicidade
+    // Verifica se já existe
     const existente = await Candidatura.findOne({ vagaId, userId });
     if (existente) {
       return res.status(400).json({ message: 'Você já se candidatou a esta vaga.' });
@@ -22,6 +23,7 @@ exports.criarCandidatura = async (req, res) => {
   }
 };
 
+// Listar candidaturas do usuário logado
 exports.listarMinhasCandidaturas = async (req, res) => {
   try {
     const candidaturas = await Candidatura.find({ userId: req.user._id }).populate('vagaId');
@@ -43,8 +45,7 @@ exports.listarMinhasCandidaturas = async (req, res) => {
   }
 };
 
-
- // Aprovar uma candidatura
+// Aprovar uma candidatura
 exports.aprovarCandidatura = async (req, res) => {
   const { id } = req.params;
 
@@ -96,8 +97,7 @@ exports.recusarCandidatura = async (req, res) => {
   }
 };
 
-
-// Listar todas as candidaturas pendentes
+// Listar candidaturas com status "pendente"
 exports.listarPendentes = async (req, res) => {
   try {
     const pendentes = await Candidatura.find({ status: 'pendente' }).populate('userId vagaId');
@@ -108,7 +108,7 @@ exports.listarPendentes = async (req, res) => {
   }
 };
 
-// Confirmar participação (após aprovação)
+// Confirmar participação após aprovação
 exports.confirmarParticipacao = async (req, res) => {
   const { id } = req.params;
 
@@ -138,7 +138,7 @@ exports.confirmarParticipacao = async (req, res) => {
   }
 };
 
-
+// Excluir candidatura recusada
 exports.excluirCandidatura = async (req, res) => {
   const { id } = req.params;
 
@@ -166,16 +166,14 @@ exports.excluirCandidatura = async (req, res) => {
   }
 };
 
-
-// Listar todos os candidatos com status "confirmado" (apenas admins)
+// Listar candidatos com status "confirmado"
 exports.listarConfirmados = async (req, res) => {
   try {
     const confirmados = await Candidatura.find({ status: "confirmado" })
-      .populate("userId", "name email") // pega nome e email do voluntário
+      .populate("userId", "name email")
       .populate("vagaId", "titulodavaga")
       .sort({ updatedAt: -1 });
 
-    // Remove candidaturas com userId nulo
     const confirmadosValidos = confirmados.filter(c => c.userId);
 
     const resultado = confirmadosValidos.map((c) => ({
