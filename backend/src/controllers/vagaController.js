@@ -2,8 +2,6 @@ const Candidatura = require("../models/Candidatura");
 const Task = require("../models/task");
 const Vaga = require("../models/Vaga");
 const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
 
 // POST - Cria uma nova vaga
 const createVaga = async (req, res) => {
@@ -12,8 +10,6 @@ const createVaga = async (req, res) => {
       titulodavaga, descricao, tipo_vaga,
       vl_pontos, id_hospital, status, qtd_vagas
     } = req.body;
-
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : "";
 
     const novaVaga = new Vaga({
       titulodavaga,
@@ -24,7 +20,7 @@ const createVaga = async (req, res) => {
       status,
       qtd_vagas: Number(qtd_vagas),
       iddavaga: crypto.randomUUID(),
-      imageUrl,
+      imageUrl: "", // Opcional: pode ser removido se o campo não for mais necessário no schema
     });
 
     await novaVaga.save();
@@ -52,10 +48,6 @@ const editarVaga = async (req, res) => {
     const vagaId = req.params.id;
     const updateData = req.body;
 
-    if (req.file) {
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
-    }
-
     const vagaAtualizada = await Vaga.findByIdAndUpdate(vagaId, updateData, { new: true });
 
     if (!vagaAtualizada) {
@@ -77,18 +69,6 @@ const deletarVaga = async (req, res) => {
     const vaga = await Vaga.findById(vagaId);
     if (!vaga) {
       return res.status(404).json({ message: "Vaga não encontrada." });
-    }
-
-    // Remove imagem associada (se existir)
-    if (vaga.imageUrl) {
-      const imagePath = path.join(__dirname, "../../", vaga.imageUrl);
-      fs.access(imagePath, fs.constants.F_OK, (err) => {
-        if (!err) {
-          fs.unlink(imagePath, (err) => {
-            if (err) console.warn("Erro ao excluir imagem:", err.message);
-          });
-        }
-      });
     }
 
     // Remove candidaturas e tarefas vinculadas
