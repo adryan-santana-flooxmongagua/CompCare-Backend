@@ -85,9 +85,27 @@ const deletarVaga = async (req, res) => {
   }
 };
 
+
+const listarVagasComConfirmados = async (req, res) => {
+  try {
+    // Encontra todos os IDs de vagas com pelo menos um candidato confirmado
+    const confirmadas = await Candidatura.find({ status: "confirmado" }).distinct("vagaId");
+
+    // Busca vagas que têm pelo menos um confirmado
+    const vagas = await Vaga.find({ _id: { $in: confirmadas } }).sort({ createdAt: -1 });
+
+    res.status(200).json(vagas);
+  } catch (error) {
+    console.error("Erro ao listar vagas com confirmados:", error);
+    res.status(500).json({ error: "Erro ao listar vagas com confirmados" });
+  }
+};
+
+
 module.exports = {
   createVaga,
   listarVagas,
   editarVaga,
   deletarVaga,
+  listarVagasComConfirmados,
 };

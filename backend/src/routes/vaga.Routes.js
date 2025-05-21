@@ -9,6 +9,7 @@ const {
   listarVagas,
   editarVaga,
   deletarVaga,
+  listarVagasComConfirmados,
 } = require("../controllers/vagaController");
 
 // Cria a pasta uploads se não existir
@@ -59,5 +60,6 @@ router.post("/vagas", upload.single("image"), createVaga);
 router.get("/vagas", listarVagas);
 router.put("/vagas/:id", upload.single("image"), editarVaga);
 router.delete("/vagas/:id", deletarVaga);
+router.get('/com-confirmados', listarVagasComConfirmados);
 
 module.exports = router;

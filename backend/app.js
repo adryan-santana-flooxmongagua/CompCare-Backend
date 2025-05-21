@@ -14,7 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:3000';
 app.use(cors({ credentials: true, origin: allowedOrigin }));
 
-// Servir arquivos estáticos da pasta uploads
+
+
 app.use('/public', express.static(path.resolve(__dirname, 'public')));
 
 
