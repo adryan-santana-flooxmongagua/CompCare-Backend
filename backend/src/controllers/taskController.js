@@ -51,17 +51,39 @@ exports.listarMinhasTarefas = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Busca tarefas do voluntário
-    const tarefas = await Task.find({ "atribuicoes.userId": userId })
+    // Buscar candidaturas confirmadas do usuário
+    const candidaturasConfirmadas = await Candidatura.find({ userId, status: 'confirmado' });
+    const vagaIdsConfirmadas = candidaturasConfirmadas.map(c => c.vagaId);
+
+    // Buscar tarefas das vagas confirmadas
+    const tarefas = await Task.find({ vagaId: { $in: vagaIdsConfirmadas } });
+
+    // Atualizar tarefas onde o user ainda não está atribuído
+    const tarefasAtualizadas = await Promise.all(
+      tarefas.map(async tarefa => {
+        const jaAtribuido = tarefa.atribuicoes.some(a => a.userId.toString() === userId);
+
+        if (!jaAtribuido) {
+          tarefa.atribuicoes.push({ userId }); // status será undefined por padrão
+          await tarefa.save();
+        }
+
+        return tarefa;
+      })
+    );
+
+    // Buscar tarefas novamente populando os dados
+    const tarefasCompletas = await Task.find({ vagaId: { $in: vagaIdsConfirmadas }, "atribuicoes.userId": userId })
       .populate("vagaId")
       .populate("atribuicoes.userId", "name email");
 
-    res.json(tarefas);
+    res.json(tarefasCompletas);
   } catch (error) {
     console.error("Erro ao buscar suas tarefas:", error);
     res.status(500).json({ message: "Erro ao buscar suas tarefas." });
   }
 };
+
 
 exports.concluirTarefa = async (req, res) => {
   const userId = req.user.id;
