@@ -171,7 +171,7 @@ exports.listarConfirmados = async (req, res) => {
   try {
     const confirmados = await Candidatura.find({ status: "confirmado" })
       .populate("userId", "name email")
-      .populate("vagaId", "titulodavaga")
+      .populate("vagaId", "titulodavaga tipo_vaga")
       .sort({ updatedAt: -1 });
 
     const confirmadosValidos = confirmados.filter(c => c.userId);
@@ -180,7 +180,7 @@ exports.listarConfirmados = async (req, res) => {
       nome: c.userId.name,
       email: c.userId.email,
       vaga: c.vagaId?.titulodavaga || "Não informado",
-      fonte: "Dispatch",
+      fonte: c.vagaId?.tipo_vaga || "Tipo não informado",
       timestamp: c.updatedAt,
       erros: c.erros || 0,
     }));
