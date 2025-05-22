@@ -50,8 +50,7 @@ exports.login = async (req, res) => {
     // Gera o token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      JWT_SECRET,
-      { expiresIn: '8h' }
+      JWT_SECRET
     );
 
     res.status(200).json({
