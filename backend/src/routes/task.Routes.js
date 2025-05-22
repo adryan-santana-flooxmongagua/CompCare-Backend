@@ -7,5 +7,6 @@ router.post('/criar', autenticarUsuario, taskController.criarTarefa);
 router.get('/vaga/:vagaId', autenticarUsuario, taskController.listarTarefasPorVaga);
 router.get('/minhas', autenticarUsuario, taskController.listarMinhasTarefas);
 router.patch('/:id/concluir', autenticarUsuario, taskController.concluirTarefa);
+router.delete('/:id', autenticarUsuario, taskController.deletarTarefa); // ✅ corrigido
 
 module.exports = router;

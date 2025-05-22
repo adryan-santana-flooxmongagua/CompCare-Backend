@@ -113,3 +113,20 @@ exports.concluirTarefa = async (req, res) => {
     res.status(500).json({ message: "Erro interno do servidor" });
   }
 };
+
+exports.deletarTarefa = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const tarefa = await Task.findByIdAndDelete(id);
+
+    if (!tarefa) {
+      return res.status(404).json({ message: "Tarefa não encontrada" });
+    }
+
+    res.json({ message: "Tarefa excluída com sucesso" });
+  } catch (error) {
+    console.error("Erro ao excluir tarefa:", error);
+    res.status(500).json({ message: "Erro ao excluir tarefa" });
+  }
+};
