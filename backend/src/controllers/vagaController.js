@@ -35,12 +35,24 @@ const createVaga = async (req, res) => {
 const listarVagas = async (req, res) => {
   try {
     const vagas = await Vaga.find().sort({ createdAt: -1 });
-    res.status(200).json(vagas);
+
+    const vagasComContagem = await Promise.all(
+      vagas.map(async (vaga) => {
+        const totalCandidaturas = await Candidatura.countDocuments({ vagaId: vaga._id });
+        return {
+          ...vaga.toObject(),
+          totalCandidaturas,
+        };
+      })
+    );
+
+    res.status(200).json(vagasComContagem);
   } catch (error) {
     console.error("Erro ao listar vagas:", error);
     res.status(500).json({ error: "Erro ao listar vagas" });
   }
 };
+
 
 // PUT - Edita uma vaga pelo ID
 const editarVaga = async (req, res) => {
