@@ -6,6 +6,7 @@ const authRoutes = require('./auth.Routes');
 const userRoutes = require('./user.Routes');
 const candidaturaRoutes = require('./candidatura.Routes');
 const taskRoutes = require('./task.Routes');
+const pontuacaoRoutes = require('./pontuacao.Routes'); 
 
 // Rota de teste
 router.get('/', (req, res) => {
@@ -18,6 +19,6 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/candidaturas', candidaturaRoutes);
 router.use('/tasks', taskRoutes);
-
+router.use('/pontuacao', pontuacaoRoutes); 
 
 module.exports = router;
