@@ -108,7 +108,7 @@ exports.listarPendentes = async (req, res) => {
   }
 };
 
-// Confirmar participação após aprovação
+// Confirmar participação após aprovação e atribuir pontos
 exports.confirmarParticipacao = async (req, res) => {
   const { id } = req.params;
 
@@ -127,16 +127,40 @@ exports.confirmarParticipacao = async (req, res) => {
       return res.status(400).json({ message: 'Apenas candidaturas aceitas podem ser confirmadas.' });
     }
 
+    // Buscar a vaga para pegar os pontos
+    const Vaga = require('../models/Vaga');
+    const vaga = await Vaga.findById(candidatura.vagaId);
+    if (!vaga) {
+      return res.status(404).json({ message: 'Vaga não encontrada.' });
+    }
+
+    // Atualizar o status da candidatura
     candidatura.status = 'confirmado';
     candidatura.updatedAt = new Date();
     await candidatura.save();
 
-    res.json({ message: 'Participação confirmada com sucesso.', candidatura });
+    // Atribuir os pontos ao usuário
+    const User = require('../models/User');
+    const usuario = await User.findById(req.user.id);
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    usuario.pontos = (usuario.pontos || 0) + vaga.vl_pontos;
+    await usuario.save();
+
+    res.json({
+      message: 'Participação confirmada e pontos atribuídos com sucesso.',
+      candidatura,
+      pontosTotais: usuario.pontos
+    });
+
   } catch (error) {
     console.error('Erro ao confirmar participação:', error);
     res.status(500).json({ message: 'Erro ao confirmar participação.' });
   }
 };
+
 
 // Excluir candidatura recusada
 exports.excluirCandidatura = async (req, res) => {
